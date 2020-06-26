@@ -1,33 +1,6 @@
 ---
 - include_tasks: "install-{{ ansible_facts.os_family }}.yml"
 
-# Setup NTP
-- name: Disable timesyncd
-  shell: timedatectl set-ntp no
-  ignore_errors: yes
-
-- name: Remove NTP servers
-  lineinfile:
-    path: /etc/ntp.conf
-    state: absent
-    regexp: '^([\s]*)(server|pool)'
-
-- name: Add NTP servers
-  blockinfile:
-    path: /etc/ntp.conf
-    block: |
-      server time1.google.com iburst
-      server time2.google.com iburst
-      server time3.google.com iburst
-      server time4.google.com iburst
-
-- name: Restart NTP
-  systemd:
-    name: ntp
-    daemon_reload: yes
-    state: restarted
-    enabled: yes
-
 # Download the cockroach binary
 - name: Create temporary directory for cockroach
   tempfile:
@@ -103,7 +76,7 @@
       run_once: yes
 
     - name: Create CA cert
-      shell: "cockroach cert create-ca --certs-dir={{ roach_pki_path }} --ca-key={{ roach_pki_path }}/ca.key"
+      shell: "/usr/local/bin/cockroach cert create-ca --certs-dir={{ roach_pki_path }} --ca-key={{ roach_pki_path }}/ca.key"
       delegate_to: "{{ play_hosts[0] }}"
       run_once: yes
       when:
@@ -121,7 +94,7 @@
     - name: Create node certs
       shell: |
         {% for host in play_hosts %}
-        cockroach cert create-node \
+        /usr/local/bin/cockroach cert create-node \
         {{ hostvars[host]['ansible_all_ipv4_addresses'] | join(' ') }} \
         {{ hostvars[host]['ansible_facts']['fqdn'] }} \
         {{ hostvars[host]['ansible_facts']['hostname'] }} \
@@ -190,7 +163,7 @@
 
     - name: Create client cert
       shell: |
-        cockroach cert create-client root --certs-dir={{ roach_path }}/certs --ca-key={{ roach_pki_path }}/ca.key
+        /usr/local/bin/cockroach cert create-client root --certs-dir={{ roach_path }}/certs --ca-key={{ roach_pki_path }}/ca.key
       delegate_to: "{{ play_hosts[0] }}"
       run_once: yes
       when:
@@ -256,7 +229,7 @@
 
 # This expects the user client cert to be on the host
 - name: Check cluster initialization
-  shell: cockroach sql --execute="SELECT 1" --user={{ roach_init_check_user }} --certs-dir={{ roach_init_cert_path }} --url postgresql://localhost
+  shell: /usr/local/bin/cockroach sql --execute="SELECT 1" --user={{ roach_init_check_user }} --certs-dir={{ roach_init_cert_path }} --url postgresql://localhost
   register: cluster_init_check
   delegate_to: "{% if roach_pki_custom_ca %}localhost{% else %}{{ play_hosts[0] }}{% endif %}"
   run_once: yes

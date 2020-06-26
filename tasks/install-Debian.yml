@@ -1,7 +1,36 @@
 ---
 - name: Install required packages
   apt:
-    update_cache: no
+    update_cache: yes
     name:
       - ntp
     state: present
+
+# Setup NTP
+- name: Disable timesyncd
+  shell: timedatectl set-ntp no
+  ignore_errors: yes
+  tags:
+    - ciskip
+
+- name: Remove NTP servers
+  lineinfile:
+    path: /etc/ntp.conf
+    state: absent
+    regexp: '^([\s]*)(server|pool)'
+
+- name: Add NTP servers
+  blockinfile:
+    path: /etc/ntp.conf
+    block: |
+      server time1.google.com iburst
+      server time2.google.com iburst
+      server time3.google.com iburst
+      server time4.google.com iburst
+
+- name: Restart NTP
+  systemd:
+    name: ntp
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
