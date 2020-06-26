@@ -1,0 +1,12 @@
+roach_cluster_name: roach
+roach_version: v20.1.2
+roach_pki_custom_ca: no
+roach_pki_path: /etc/pki/cockroach/
+roach_path: /var/lib/cockroach/
+roach_systemd_path: /etc/systemd/system
+
+roach_cache: '.25'
+roach_max_sql_memory: '.25'
+
+roach_init_check_user: root
+roach_init_cert_path: "{{ roach_path }}/certs"

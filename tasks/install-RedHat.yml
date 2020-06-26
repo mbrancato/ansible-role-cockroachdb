@@ -1,0 +1,6 @@
+---
+- name: Install required packages
+  package:
+    name:
+    - ntp
+    state: present

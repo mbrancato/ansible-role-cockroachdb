@@ -1,0 +1,7 @@
+---
+- name: Install required packages
+  apt:
+    update_cache: no
+    name:
+    - ntp
+    state: present
