@@ -4,3 +4,11 @@
     name:
       - chrony
     state: present
+
+- name: Disable timesyncd
+  shell: timedatectl set-ntp no
+  ignore_errors: yes
+  tags:
+    - notest
+
+# configure chrony here

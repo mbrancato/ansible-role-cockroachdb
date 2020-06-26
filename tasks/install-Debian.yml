@@ -11,7 +11,7 @@
   shell: timedatectl set-ntp no
   ignore_errors: yes
   tags:
-    - ciskip
+    - notest
 
 - name: Remove NTP servers
   lineinfile:
