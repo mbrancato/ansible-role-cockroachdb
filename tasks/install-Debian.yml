@@ -3,5 +3,5 @@
   apt:
     update_cache: no
     name:
-    - ntp
+      - ntp
     state: present
