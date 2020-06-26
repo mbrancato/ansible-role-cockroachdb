@@ -1,0 +1,15 @@
+- name: Verify role
+  hosts: all
+  become: yes
+  gather_facts: no
+
+  vars_files:
+    - ../../defaults/main.yml
+
+  tasks:
+    - name: Check cluster initialization
+      shell: /usr/local/bin/cockroach sql --execute="SELECT 1" --user={{ roach_init_check_user }} --certs-dir={{ roach_init_cert_path }} --url postgresql://localhost
+      register: cluster_init_check
+      delegate_to: "{% if roach_pki_custom_ca %}localhost{% else %}{{ play_hosts[0] }}{% endif %}"
+      run_once: yes
+      ignore_errors: yes
