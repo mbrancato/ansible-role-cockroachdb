@@ -18,6 +18,7 @@
     path: /etc/ntp.conf
     state: absent
     regexp: '^([\s]*)(server|pool)'
+  notify: restart ntp
 
 - name: Add NTP servers
   blockinfile:
@@ -28,9 +29,6 @@
       server time3.google.com iburst
       server time4.google.com iburst
 
-- name: Restart NTP
-  systemd:
-    name: ntp
-    daemon_reload: yes
-    state: restarted
-    enabled: yes
+  notify: restart ntp
+
+- meta: flush_handlers

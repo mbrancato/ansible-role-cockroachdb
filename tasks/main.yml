@@ -30,7 +30,7 @@
   copy:
     src: "{{ cockroach_extract_temp.path }}/cockroach-{{ roach_version }}.linux-amd64/cockroach"
     dest: /usr/local/bin/cockroach
-    mode: 0755
+    mode: '0755'
     remote_src: yes
 
 - name: Create cockroach group
