@@ -60,6 +60,11 @@ private keys using a [custom CA](https://www.cockroachlabs.com/docs/v20.1/create
 - Total size in bytes for caches
 - Default: *.25*
 
+### `roach_max_sql_memory`
+
+- Maximum memory capacity available to store temporary data for SQL clients
+- Default: *.25*
+
 ### `roach_init_check_user`
 
 - CockroachDB user to authenticate with to check initialization status

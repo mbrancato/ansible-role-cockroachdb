@@ -1,0 +1,10 @@
+---
+- name: restart ntp
+  systemd:
+    state: restarted
+    name: ntp
+
+- name: restart chrony
+  systemd:
+    state: restarted
+    name: chrony
